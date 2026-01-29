@@ -1,0 +1,74 @@
+to make sure the right ruby verison is used:
+    eval "$(rbenv init -)"
+    which ruby #should be /Users/daryapopova/.rbenv/shims/ruby
+
+
+------------------------------------
+to run the FLASK server:
+
+export FLASK_APP=app.py
+export FLASK_ENV=development
+export FLASK_RUN_PORT=9000
+flask run --host=0.0.0.0
+------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+    
+
+
+
+
+
+
+
+minimal experiment.html set up that was functional below:
+------------------------------------
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>My experiment</title>
+    <script src="https://unpkg.com/jspsych@8.2.2"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-html-keyboard-response@2.1.0"></script>
+    <link href="https://unpkg.com/jspsych@8.2.2/css/jspsych.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body></body>
+  <script>
+    const jsPsych = initJsPsych();
+
+    const hello_trial = {
+      type: jsPsychHtmlKeyboardResponse,
+      stimulus: 'Hello world!'
+    }
+
+    const bye_trial = {
+      type: jsPsychHtmlKeyboardResponse,
+      stimulus: 'Bye world!'
+    }
+
+
+
+    jsPsych.run([hello_trial, bye_trial]);
+  </script>
+</html>
+------------------------------------

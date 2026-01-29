@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns="http://www.w3.org/2000/svg"
+   version="1.1"
+   width="80mm"
+   height="90mm"
+   viewBox="0 0 302 340">
+  
+  <!-- Back leg (behind body) -->
+  <path
+     style="fill:#ffc107;fill-opacity:1;stroke:none"
+     d="M 200 190
+        C 220 200 250 220 260 250
+        C 265 270 260 290 250 300
+        C 240 310 225 310 220 300
+        C 210 280 215 260 210 240
+        C 205 220 195 200 200 190
+        Z" />
+  
+  <!-- Back arm (behind body) -->
+  <path
+     style="fill:#ffc107;fill-opacity:1;stroke:none"
+     d="M 85 120
+        C 60 110 35 95 20 80
+        C 10 70 10 55 20 48
+        C 30 41 45 45 55 55
+        C 75 75 80 100 85 120
+        Z" />
+  
+  <!-- Main body - oval/egg shape -->
+  <ellipse
+     style="fill:#ffeb3b;fill-opacity:1;stroke:none"
+     cx="150" cy="160" rx="85" ry="95" />
+  
+  <!-- Front arm left - thin wavy -->
+  <path
+     style="fill:#ffeb3b;fill-opacity:1;stroke:none"
+     d="M 70 130
+        C 45 120 25 130 15 150
+        C 5 170 10 190 25 198
+        C 40 206 55 195 58 180
+        C 62 160 65 145 70 130
+        Z" />
+  <!-- Hand/claw -->
+  <ellipse style="fill:#ffc107;stroke:none" cx="20" cy="195" rx="12" ry="10" />
+  <ellipse style="fill:#ffc107;stroke:none" cx="10" cy="185" rx="8" ry="7" />
+  <ellipse style="fill:#ffc107;stroke:none" cx="30" cy="188" rx="7" ry="8" />
+  
+  <!-- Front arm right - thicker -->
+  <path
+     style="fill:#ffeb3b;fill-opacity:1;stroke:none"
+     d="M 220 140
+        C 250 130 275 140 285 160
+        C 295 180 290 205 270 215
+        C 250 225 230 210 228 190
+        C 226 170 225 155 220 140
+        Z" />
+  <!-- Hand/claw -->
+  <ellipse style="fill:#ffc107;stroke:none" cx="275" cy="210" rx="14" ry="12" />
+  <ellipse style="fill:#ffc107;stroke:none" cx="288" cy="198" rx="9" ry="8" />
+  <ellipse style="fill:#ffc107;stroke:none" cx="268" cy="222" rx="8" ry="9" />
+  
+  <!-- Front leg left -->
+  <path
+     style="fill:#ffeb3b;fill-opacity:1;stroke:none"
+     d="M 95 240
+        C 80 260 70 290 75 310
+        C 78 325 90 335 105 332
+        C 120 329 125 315 120 300
+        C 115 280 110 260 95 240
+        Z" />
+  <!-- Foot -->
+  <ellipse style="fill:#ffc107;stroke:none" cx="90" cy="328" rx="18" ry="10" />
+  
+  <!-- Front leg right -->
+  <path
+     style="fill:#ffeb3b;fill-opacity:1;stroke:none"
+     d="M 190 235
+        C 195 260 200 285 195 305
+        C 192 320 180 330 165 328
+        C 150 326 148 312 152 297
+        C 158 275 175 255 190 235
+        Z" />
+  <!-- Foot -->
+  <ellipse style="fill:#ffc107;stroke:none" cx="178" cy="325" rx="18" ry="10" />
+  
+  <!-- Spots on body -->
+  <ellipse style="fill:#ffc107;stroke:none" cx="110" cy="180" rx="10" ry="12" />
+  <ellipse style="fill:#ffc107;stroke:none" cx="180" cy="195" rx="8" ry="9" />
+  <ellipse style="fill:#ffc107;stroke:none" cx="140" cy="220" rx="12" ry="10" />
+  <ellipse style="fill:#ffc107;stroke:none" cx="195" cy="145" rx="7" ry="8" />
+  <ellipse style="fill:#ffc107;stroke:none" cx="100" cy="130" rx="6" ry="7" />
+  <ellipse style="fill:#ffc107;stroke:none" cx="165" cy="175" rx="5" ry="6" />
+  
+  <!-- Left eye -->
+  <ellipse style="fill:#000000;stroke:none" cx="115" cy="110" rx="28" ry="30" />
+  <ellipse style="fill:#ffffff;stroke:none" cx="115" cy="110" rx="20" ry="22" />
+  <ellipse style="fill:#000000;stroke:none" cx="118" cy="112" rx="10" ry="11" />
+  <ellipse style="fill:#ffffff;stroke:none" cx="122" cy="106" rx="4" ry="4" />
+  
+  <!-- Right eye -->
+  <ellipse style="fill:#000000;stroke:none" cx="175" cy="105" rx="25" ry="27" />
+  <ellipse style="fill:#ffffff;stroke:none" cx="175" cy="105" rx="18" ry="20" />
+  <ellipse style="fill:#000000;stroke:none" cx="178" cy="107" rx="9" ry="10" />
+  <ellipse style="fill:#ffffff;stroke:none" cx="181" cy="102" rx="3.5" ry="3.5" />
+  
+  <!-- Smile -->
+  <path
+     style="fill:none;stroke:#000000;stroke-width:3.5;stroke-linecap:round"
+     d="M 120 155 C 135 172 160 172 175 155" />
+  
+  <!-- Antenna left -->
+  <path
+     style="fill:none;stroke:#ffeb3b;stroke-width:8;stroke-linecap:round"
+     d="M 100 70 C 85 45 70 30 55 25" />
+  <ellipse style="fill:#ffc107;stroke:none" cx="55" cy="25" rx="10" ry="10" />
+  
+  <!-- Antenna right -->
+  <path
+     style="fill:none;stroke:#ffeb3b;stroke-width:8;stroke-linecap:round"
+     d="M 185 68 C 200 40 220 25 245 20" />
+  <ellipse style="fill:#ffc107;stroke:none" cx="245" cy="20" rx="12" ry="12" />
+  
+</svg>

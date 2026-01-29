@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns="http://www.w3.org/2000/svg"
+   version="1.1"
+   width="75mm"
+   height="85mm"
+   viewBox="0 0 283 321">
+  
+  <!-- Main body - blobby shape -->
+  <path
+     style="fill:#d43d00;fill-opacity:1;stroke:none"
+     d="M 141 30
+        C 180 30 220 50 245 90
+        C 270 130 275 180 260 220
+        C 245 260 210 290 160 295
+        C 110 300 65 280 45 240
+        C 25 200 25 150 45 105
+        C 65 60 100 30 141 30
+        Z" />
+  
+  <!-- Inner glow/marking -->
+  <path
+     style="fill:#ff773f;fill-opacity:0.5;stroke:none"
+     d="M 141 60
+        C 170 60 200 75 218 105
+        C 236 135 240 175 228 205
+        C 216 235 190 255 155 258
+        C 120 261 90 245 75 215
+        C 60 185 60 150 75 120
+        C 90 90 112 60 141 60
+        Z" />
+  
+  <!-- Large central eye -->
+  <ellipse style="fill:#000000;stroke:none" cx="140" cy="140" rx="45" ry="42" />
+  <ellipse style="fill:#ffffff;stroke:none" cx="140" cy="140" rx="32" ry="30" />
+  <ellipse style="fill:#000000;stroke:none" cx="145" cy="142" rx="16" ry="16" />
+  <ellipse style="fill:#ffffff;stroke:none" cx="150" cy="136" rx="6" ry="6" />
+  
+  <!-- Small eye top left -->
+  <ellipse style="fill:#000000;stroke:none" cx="75" cy="85" rx="18" ry="17" />
+  <ellipse style="fill:#ffffff;stroke:none" cx="75" cy="85" rx="12" ry="11" />
+  <ellipse style="fill:#000000;stroke:none" cx="77" cy="86" rx="6" ry="6" />
+  <ellipse style="fill:#ffffff;stroke:none" cx="79" cy="83" rx="2.5" ry="2.5" />
+  
+  <!-- Small eye top right -->
+  <ellipse style="fill:#000000;stroke:none" cx="205" cy="95" rx="15" ry="14" />
+  <ellipse style="fill:#ffffff;stroke:none" cx="205" cy="95" rx="10" ry="9" />
+  <ellipse style="fill:#000000;stroke:none" cx="207" cy="96" rx="5" ry="5" />
+  <ellipse style="fill:#ffffff;stroke:none" cx="209" cy="93" rx="2" ry="2" />
+  
+  <!-- Tiny eye bottom -->
+  <ellipse style="fill:#000000;stroke:none" cx="120" cy="220" rx="10" ry="10" />
+  <ellipse style="fill:#ffffff;stroke:none" cx="120" cy="220" rx="7" ry="7" />
+  <ellipse style="fill:#000000;stroke:none" cx="121" cy="221" rx="3.5" ry="3.5" />
+  <ellipse style="fill:#ffffff;stroke:none" cx="122" cy="219" rx="1.5" ry="1.5" />
+  
+  <!-- Floating orbs/satellites -->
+  <ellipse style="fill:#ff773f;stroke:none" cx="45" cy="50" rx="12" ry="12" />
+  <ellipse style="fill:#d43d00;stroke:none" cx="45" cy="50" rx="7" ry="7" />
+  
+  <ellipse style="fill:#ff773f;stroke:none" cx="250" cy="60" rx="15" ry="15" />
+  <ellipse style="fill:#d43d00;stroke:none" cx="250" cy="60" rx="9" ry="9" />
+  
+  <ellipse style="fill:#ff773f;stroke:none" cx="30" cy="180" rx="10" ry="10" />
+  <ellipse style="fill:#d43d00;stroke:none" cx="30" cy="180" rx="6" ry="6" />
+  
+  <ellipse style="fill:#ff773f;stroke:none" cx="265" cy="170" rx="13" ry="13" />
+  <ellipse style="fill:#d43d00;stroke:none" cx="265" cy="170" rx="8" ry="8" />
+  
+  <ellipse style="fill:#ff773f;stroke:none" cx="200" cy="280" rx="11" ry="11" />
+  <ellipse style="fill:#d43d00;stroke:none" cx="200" cy="280" rx="6" ry="6" />
+  
+  <!-- Connection lines to orbs -->
+  <path style="fill:none;stroke:#ff773f;stroke-width:3;stroke-linecap:round" d="M 55 58 C 70 70 80 75 85 80" />
+  <path style="fill:none;stroke:#ff773f;stroke-width:3;stroke-linecap:round" d="M 240 68 C 225 78 215 85 210 90" />
+  <path style="fill:none;stroke:#ff773f;stroke-width:3;stroke-linecap:round" d="M 38 175 C 45 170 50 165 55 160" />
+  <path style="fill:none;stroke:#ff773f;stroke-width:3;stroke-linecap:round" d="M 255 168 C 248 165 242 162 235 160" />
+  <path style="fill:none;stroke:#ff773f;stroke-width:3;stroke-linecap:round" d="M 195 272 C 185 265 178 258 172 250" />
+  
+  <!-- Spots on body -->
+  <ellipse style="fill:#ff773f;stroke:none" cx="95" cy="180" rx="8" ry="7" />
+  <ellipse style="fill:#ff773f;stroke:none" cx="185" cy="190" rx="6" ry="8" />
+  <ellipse style="fill:#ff773f;stroke:none" cx="170" cy="240" rx="7" ry="6" />
+  <ellipse style="fill:#ff773f;stroke:none" cx="80" cy="130" rx="5" ry="5" />
+  <ellipse style="fill:#ff773f;stroke:none" cx="200" cy="145" rx="6" ry="5" />
+  <ellipse style="fill:#ff773f;stroke:none" cx="105" cy="250" rx="8" ry="6" />
+  
+  <!-- Curved smile -->
+  <path
+     style="fill:none;stroke:#000000;stroke-width:3;stroke-linecap:round"
+     d="M 130 185 C 140 195 155 195 165 185" />
+  
+</svg>
