@@ -126,6 +126,12 @@ var jsPsychTwoStepTrial = (function (jspsych) {
         pretty_name: 'Forced message',
         description: 'Instruction banner text for forced trials.'
       },
+      show_gem_counter: {
+        type: jspsych.ParameterType.BOOL,
+        default: true,
+        pretty_name: 'Show gem counter',
+        description: 'Show cumulative gem counter during trials.'
+      },
     }
   }
 
@@ -307,7 +313,7 @@ var jsPsychTwoStepTrial = (function (jspsych) {
         if (banner && forced_s1_side !== null) {
           const dir1 = forced_s1_side === 0 ? 'LEFT' : 'RIGHT';
           // Always derive banner text from the mapped side to avoid mismatches
-          showBanner(`The ship is hijacked. Choose ${dir1} rocket`);
+          showBanner(`This is a forced trial: Choose ${dir1} rocket`);
         } else {
           hideBanner();
         }
@@ -335,7 +341,10 @@ var jsPsychTwoStepTrial = (function (jspsych) {
         if (trial.data && trial.data.trial === 1 && trial.data.block === 1) {
           window.total_gems = 0;
         }
-        if (gemCounterEl) { gemCounterEl.textContent = window.gem_counter; }
+        if (gemCounterEl) {
+          gemCounterEl.textContent = window.gem_counter;
+          gemCounterEl.style.display = trial.show_gem_counter ? 'block' : 'none';
+        }
       } catch (e) {
         // ignore
       }
@@ -469,12 +478,8 @@ var jsPsychTwoStepTrial = (function (jspsych) {
             const mapped = state_2_ids_base.indexOf(trial.forced_state2_key);
             forced_s2_side = mapped !== -1 ? mapped : trial.forced_state2_key;
           }
-          if (forced_s2_side !== null) {
-            const dir2 = forced_s2_side === 0 ? 'LEFT' : 'RIGHT';
-            showBanner(`The ship is hijacked. Choose ${dir2} alien`);
-          } else {
-            hideBanner();
-          }
+          // At stage 2, show reward-visibility banner instead of forcing alien choice
+          showBanner('This is a forced trial: you can see what rewards the aliens will give you');
         }
         
         // Keep valid_responses_s2 as standard [left, right] for proper indexing;
@@ -501,6 +506,70 @@ var jsPsychTwoStepTrial = (function (jspsych) {
         display_element.querySelector('#alien-0').setAttribute('state', '2');
         display_element.querySelector('#alien-1-img').setAttribute('src', trial.aliens[state_2_ids[1]]);
         display_element.querySelector('#alien-1').setAttribute('state', '2');
+
+        // On forced trials, reveal both alien rewards during the choice stage.
+        // For non-forced trials, keep reward previews hidden.
+        const reward0 = display_element.querySelector('#reward-0');
+        const reward1 = display_element.querySelector('#reward-1');
+        if (trial.forced_trial) {
+          // Defensive: ensure outcomes array exists and has valid entries
+          if (!trial.outcomes || !Array.isArray(trial.outcomes) || trial.outcomes.length < 2) {
+            trial.outcomes = trial.outcomes || [0, 0];
+            while (trial.outcomes.length < 2) { trial.outcomes.push(0); }
+          }
+          const out0 = trial.outcomes[state_2_ids[0]] || 0;
+          const out1 = trial.outcomes[state_2_ids[1]] || 0;
+          const alien0 = display_element.querySelector('#alien-0');
+          const alien1 = display_element.querySelector('#alien-1');
+          const containerEl = display_element.querySelector('.two-step-container') || display_element;
+          const parentRect = containerEl.getBoundingClientRect();
+          const rect0 = alien0 ? alien0.getBoundingClientRect() : null;
+          const rect1 = alien1 ? alien1.getBoundingClientRect() : null;
+          const topBase = Math.min(
+            rect0 ? rect0.top : Number.POSITIVE_INFINITY,
+            rect1 ? rect1.top : Number.POSITIVE_INFINITY
+          );
+          const defaultY = parentRect.height * 0.18;
+          const y = Number.isFinite(topBase)
+            ? Math.max(20, topBase - parentRect.top - 140)
+            : Math.max(20, defaultY);
+          const centerX = parentRect.width / 2;
+          const offset = Math.min(parentRect.width * 0.18, 160);
+
+          if (reward0) {
+            reward0.textContent = '+' + String(out0);
+            reward0.setAttribute('status', 'preview');
+            reward0.style.position = 'absolute';
+            reward0.style.left = (centerX - offset) + 'px';
+            reward0.style.top = y + 'px';
+            reward0.style.transform = 'translate(-50%, 0)';
+            reward0.style.zIndex = '1000';
+            reward0.style.pointerEvents = 'none';
+            reward0.style.color = '#ffffff';
+            reward0.style.fontSize = '22px';
+            reward0.style.fontWeight = '700';
+            reward0.style.textShadow = '0 2px 6px rgba(0,0,0,0.6)';
+            reward0.style.display = 'block';
+          }
+          if (reward1) {
+            reward1.textContent = '+' + String(out1);
+            reward1.setAttribute('status', 'preview');
+            reward1.style.position = 'absolute';
+            reward1.style.left = (centerX + offset) + 'px';
+            reward1.style.top = y + 'px';
+            reward1.style.transform = 'translate(-50%, 0)';
+            reward1.style.zIndex = '1000';
+            reward1.style.pointerEvents = 'none';
+            reward1.style.color = '#ffffff';
+            reward1.style.fontSize = '22px';
+            reward1.style.fontWeight = '700';
+            reward1.style.textShadow = '0 2px 6px rgba(0,0,0,0.6)';
+            reward1.style.display = 'block';
+          }
+        } else {
+          if (reward0) { reward0.textContent = ''; reward0.removeAttribute('status'); reward0.style.display = 'none'; }
+          if (reward1) { reward1.textContent = ''; reward1.removeAttribute('status'); reward1.style.display = 'none'; }
+        }
 
         // start the response listener
         var keyboardListener = jsPsych.pluginAPI.getKeyboardResponse({
@@ -532,7 +601,7 @@ var jsPsychTwoStepTrial = (function (jspsych) {
         response.state_2_key = trial.valid_responses_s2.indexOf(info.key);
         
         // On forced trials, validate that the response matches the forced side
-        if (trial.forced_trial && forced_s2_side !== null && response.state_2_key !== forced_s2_side) {
+        if (trial.forced_trial && forced_s2_side !== null && response.state_2_key !== forced_s2_side && !(trial.data && trial.data.practice)) {
           // Ignore this response; wait for the correct key
           var keyboardListener = jsPsych.pluginAPI.getKeyboardResponse({
             callback_function: after_second_response,
@@ -614,7 +683,10 @@ var jsPsychTwoStepTrial = (function (jspsych) {
           if (typeof window.gem_counter === 'undefined') { window.gem_counter = 0; }
           window.gem_counter = window.gem_counter + (Number(outcome) || 0);
           var gemCounterEl = display_element.querySelector('#gem-counter');
-          if (gemCounterEl) { gemCounterEl.textContent = window.gem_counter; }
+          if (gemCounterEl) {
+            gemCounterEl.textContent = window.gem_counter;
+            gemCounterEl.style.display = trial.show_gem_counter ? 'block' : 'none';
+          }
           // Update total gems across all blocks (exclude practice trials)
           if (!trial.data || !trial.data.practice) {
             if (typeof window.total_gems === 'undefined') { window.total_gems = 0; }
@@ -678,13 +750,4 @@ var jsPsychTwoStepTrial = (function (jspsych) {
       if (trial.choice_duration !== null) {
         jsPsych.pluginAPI.setTimeout(function() {
           missed_response();
-        }, trial.choice_duration);
-      }
-
-    }
-  }
-  TwoStepTrialPlugin.info = info;
-
-  return TwoStepTrialPlugin;
-
-})(jsPsychModule);
+        }

@@ -12,7 +12,7 @@ const feedback_duration = 1200;
 
 // Define randomization parameters
 const randomize_s1 = true;             // randomize left/right position of state 1 rockets
-const randomize_s2 = true;             // randomize left/right position of state 2 aliens
+const randomize_s2 = false;            // keep left/right position of state 2 aliens stable (current version of the experiment)
 
 // Define quality assurance parameters
 var missed_threshold = 6;
@@ -201,7 +201,7 @@ for (let b = 0; b < NUM_BLOCKS; b++) {
 // Use noise-based rewards from two-step-drifts-with-noise.js
 
 // Number of trials (debug if need)
-const TEST_TRIALS_PER_BLOCK = 62; // should be 62 to run fully !!
+const TEST_TRIALS_PER_BLOCK = 40; // 40 trials per block
 
 // Build all preload images from all blocks for jsPsych
 const preload_images = [];
@@ -243,6 +243,86 @@ preload_images.push(...practice_info.aliens);
 // Preallocate space for all blocks and their trials.
 var TWO_STEP_TASK = [];
 
+// Build a transition map (rockets -> planets) for a given block
+function buildTransitionMapHtml(task_info, block_num) {
+  const rocket_colors = task_info.rocket_colors;
+  const planet_colors = task_info.font_colors || task_info.planet_colors;
+  const deterministic_color = task_info.deterministic_rocket_color;
+  const deterministic_index = rocket_colors.indexOf(deterministic_color);
+  const other_index = deterministic_index === 0 ? 1 : 0;
+
+  // positions for SVG
+  const r1x = 170, r2x = 430, ry = 300;
+  const p1x = 150, p2x = 300, p3x = 450, py = 45;
+
+  return `
+  <div class="transition-map-wrapper">
+    <style>
+      .transition-map-wrapper { display: flex; justify-content: center; align-items: center; }
+      .transition-map-title { text-align: center; font-size: 20px; margin: 6px 0 12px; color: #ffffff; }
+      .transition-map {
+        position: relative;
+        width: 600px;
+        height: 360px;
+        --width: 560px;
+        background: url('/static/img/background-stars.png') center / cover no-repeat;
+        border-radius: 12px;
+      }
+      .transition-map-svg { position: absolute; left: 0; top: 0; }
+      .transition-map .transition-rocket {
+        position: absolute;
+        bottom: 0;
+        transform: translate(-50%, 0) scale(0.8);
+        z-index: 2;
+      }
+    </style>
+    <div>
+      <div class="transition-map-title">Rocketship to planet transition map for Block ${block_num}</div>
+      <div class="transition-map">
+        <svg class="transition-map-svg" width="600" height="360" viewBox="0 0 600 360" aria-label="Rocket to planet transitions">
+          <defs>
+            <marker id="arrow" markerWidth="10" markerHeight="10" refX="6" refY="3" orient="auto" markerUnits="strokeWidth">
+              <path d="M0,0 L0,6 L6,3 z" fill="#ffffff" />
+            </marker>
+          </defs>
+
+          <!-- planets -->
+          <circle cx="${p1x}" cy="${py}" r="36" fill="${planet_colors[0]}" stroke="#ffffff" stroke-width="3"></circle>
+          <circle cx="${p2x}" cy="${py}" r="36" fill="${planet_colors[1]}" stroke="#ffffff" stroke-width="3"></circle>
+          <circle cx="${p3x}" cy="${py}" r="36" fill="${planet_colors[2]}" stroke="#ffffff" stroke-width="3"></circle>
+
+          <!-- arrows: deterministic rocket to planet 0 -->
+          <line x1="${deterministic_index === 0 ? r1x : r2x}" y1="${ry-70}" x2="${p1x}" y2="${py+45}" stroke="#ffffff" stroke-width="3" marker-end="url(#arrow)" />
+
+          <!-- arrows: other rocket to planets 1 and 2 -->
+          <line x1="${other_index === 0 ? r1x : r2x}" y1="${ry-70}" x2="${p2x}" y2="${py+45}" stroke="#ffffff" stroke-width="3" marker-end="url(#arrow)" />
+          <line x1="${other_index === 0 ? r1x : r2x}" y1="${ry-70}" x2="${p3x}" y2="${py+45}" stroke="#ffffff" stroke-width="3" marker-end="url(#arrow)" />
+        </svg>
+
+        <!-- rockets (HTML) -->
+        <div class="rocket transition-rocket" state="map" style="left: ${r1x}px;">
+          <div class="rocket-body">
+            <div class="rocket-window" style="background: ${rocket_colors[0]}"></div>
+            <div class="rocket-studs"></div>
+            <div class="rocket-fin" side="0" style="background: ${rocket_colors[0]}"></div>
+            <div class="rocket-fin" side="1" style="background: ${rocket_colors[0]}"></div>
+            <div class="rocket-fire"></div>
+          </div>
+        </div>
+        <div class="rocket transition-rocket" state="map" style="left: ${r2x}px;">
+          <div class="rocket-body">
+            <div class="rocket-window" style="background: ${rocket_colors[1]}"></div>
+            <div class="rocket-studs"></div>
+            <div class="rocket-fin" side="0" style="background: ${rocket_colors[1]}"></div>
+            <div class="rocket-fin" side="1" style="background: ${rocket_colors[1]}"></div>
+            <div class="rocket-fire"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
 // Generate trials and ready screens for all 5 blocks.
 for (let block_ix = 0; block_ix < 5; block_ix++) {
   
@@ -251,14 +331,14 @@ for (let block_ix = 0; block_ix < 5; block_ix++) {
   const block_drifts = all_block_drifts[block_ix];
   const block_num = block_ix + 1; // 1-indexed for display
 
-  // Pre-compute forced trials: 12 per block, covering each alien twice (randomized order).
+  // Pre-compute forced trials: 6 per block, force only the rocket choice.
   const totalTrials = block_drifts.length;
   // Exclude the first three trials from being forced
   const positions = Array.from({length: totalTrials}, (_, idx) => idx).filter(idx => idx >= 3);
   const weights = positions.map(idx => idx < Math.floor(totalTrials / 2) ? 2 : 1); // bias to first half (still excluding first 3)
-  const forced_positions = weightedSampleNoReplace(positions, weights, 12);
-  // Randomize the order of forced aliens (each alien 0-5 appears twice)
-  const forced_targets = jsPsych.randomization.shuffle([0,1,2,3,4,5,0,1,2,3,4,5]);
+  const forced_positions = weightedSampleNoReplace(positions, weights, 6);
+  // Randomize forced rocket choices (balanced left/right indices in rocket_colors array)
+  const forced_targets = jsPsych.randomization.shuffle([0,1,0,1,0,1]);
   const forced_map = {};
   forced_positions.forEach((pos, idx) => { forced_map[pos] = forced_targets[idx]; });
 
@@ -266,9 +346,23 @@ for (let block_ix = 0; block_ix < 5; block_ix++) {
   if (block_ix > 0) {
     const ready_screen = {
       type: jsPsychTwoStepInstructions,
+      on_start: function(trial) {
+        let earned = 0;
+        try {
+          earned = typeof window.gem_counter === 'number' ? window.gem_counter : 0;
+        } catch (e) {}
+        const finished_block = block_num - 1;
+        trial.pages = [
+          `<p>Take a break for a few moments and press any button when you are ready to continue.</p><p>You earned <b>${earned}</b> gems in <b>Block ${finished_block}/5</b>.</p>`,
+          "You have now travelled to a completely different part of the galaxy.</p> <p> All ships, planets and aliens are brand new.</p>",
+          buildTransitionMapHtml(task_info, block_num),
+          `Get ready to begin <b>Block ${block_num}/5</b>.<br>Press next when you're ready to start.`,
+        ];
+      },
       pages: [
         "Take a break for a few moments and press any button when you are ready to continue.",
         "You have now travelled to a completely different part of the galaxy.</p> <p> All ships, planets and aliens are brand new.</p>",
+        buildTransitionMapHtml(task_info, block_num),
         `Get ready to begin <b>Block ${block_num}/5</b>.<br>Press next when you're ready to start.`,
       ]
     };
@@ -279,7 +373,7 @@ for (let block_ix = 0; block_ix < 5; block_ix++) {
   for (let i = 0; i < block_drifts.length; i++) {
 
     const is_forced = Object.prototype.hasOwnProperty.call(forced_map, i);
-    const target_alien = is_forced ? forced_map[i] : null; // 0-5
+    const forced_rocket_key = is_forced ? forced_map[i] : null; // 0 or 1
     let forced_state1_key = null;
     let forced_state1_color = null;
     let forced_state2_key = null;
@@ -287,25 +381,11 @@ for (let block_ix = 0; block_ix < 5; block_ix++) {
     let forced_message = null;
 
     if (is_forced) {
-      const planet_idx = Math.floor(target_alien / 2); // 0,1,2
-      forced_state2_key = target_alien % 2; // 0=left alien, 1=right alien
-
-      const rc = task_info.rocket_colors;
-      const deterministicKey = rc.indexOf(task_info.deterministic_rocket_color);
-      const nonDetKey = deterministicKey === 0 ? 1 : 0;
-
-      if (planet_idx === 0) {
-        force_transition = 0;
-        forced_state1_key = deterministicKey;
-        forced_state1_color = task_info.deterministic_rocket_color;
-      } else {
-        force_transition = planet_idx; // 1 or 2
-        forced_state1_key = nonDetKey;
-        forced_state1_color = rc[nonDetKey];
-      }
-
-      const dirTxt = forced_state1_key === 0 ? 'LEFT' : 'RIGHT';
-      forced_message = `This is a forced trial. Choose ${dirTxt}`;
+      forced_state1_key = forced_rocket_key;
+      forced_state1_color = task_info.rocket_colors[forced_state1_key];
+      forced_state2_key = null;
+      force_transition = null;
+      forced_message = null;
     }
 
     // Define trial.
@@ -324,9 +404,10 @@ for (let block_ix = 0; block_ix < 5; block_ix++) {
       forced_trial: is_forced,
       forced_state1_key: forced_state1_key,
       forced_state1_color: forced_state1_color,
-      forced_alien_index: target_alien,
+      forced_alien_index: null,
       force_transition: force_transition,
       forced_message: forced_message,
+      show_gem_counter: false,
       data: {
         trial: i+1,
         block: block_num,
@@ -376,41 +457,21 @@ for (let block_ix = 0; block_ix < 5; block_ix++) {
   // Add end-of-block quiz
   const finished_block_instructions = {
     type: jsPsychTwoStepInstructions,
+    on_start: function(trial) {
+      let earned = 0;
+      try {
+        earned = typeof window.gem_counter === 'number' ? window.gem_counter : 0;
+      } catch (e) {}
+      trial.pages = [
+        `<p>Great job! You've finished <b>Block ${block_num}/5</b>.</p><p>You earned <b>${earned}</b> gems in this block.</p>`
+      ];
+    },
     pages: [
-      `<p>Great job! You've finished <b>Block ${block_num}/5</b>.</p><p>Before continuing, we have a couple of short questions for you.</p>`
+      `<p>Great job! You've finished <b>Block ${block_num}/5</b>.</p>`
     ]
   };
 
-  const finished_block_quiz = {
-    type: jsPsychTwoStepComprehension,
-    prompts: ['loading...'],
-    options: [['loading...']],
-    correct: ['loading...'],
-    on_start: function(trial) {
-      const deterministic_ship_color = task_info.deterministic_rocket_color;
-      const probabilistic_ship_color = task_info.rocket_colors.find(c => c !== task_info.deterministic_rocket_color);
-
-      const color_labels = task_info.rocket_colors.map(hex =>
-        `<span style='color: ${hex}; font-weight: bold;'>spaceship of this color</span>`
-      );
-
-      trial.prompts = [
-        `Which spaceship in <b>Block ${block_num}</b> always went to a single planet?`,
-        `Which spaceship in <b>Block ${block_num}</b> went to two different planets?`
-      ];
-      trial.options = [
-        color_labels,
-        color_labels,
-      ];
-      trial.correct = [
-        `<span style='color: ${deterministic_ship_color}; font-weight: bold;'>spaceship of this color</span>`,
-        `<span style='color: ${probabilistic_ship_color}; font-weight: bold;'>spaceship of this color</span>`,
-      ];
-    }
-  };
-
   TWO_STEP_TASK.push(finished_block_instructions);
-  TWO_STEP_TASK.push(finished_block_quiz);
 
 }
 
@@ -425,6 +486,7 @@ var READY_01 = {
     "<p>Great job! You've finished the instructions.</p><p>We'll get started with the real game now.</p>",
     "<p>In the real game, you will see new planets, aliens, and rocket ships.</p><p>However, the rules of the game <b>have not changed</b>.</p>",
     "Get ready to begin <b>Block 1/5</b>.<br>Press next when you're ready to start.",
+    buildTransitionMapHtml(block_task_info[0], 1),
   ]
 }
 
@@ -449,6 +511,7 @@ PRACTICE_TWO_TASK.push({ type: jsPsychCallFunction, func: function(){ try { wind
 
 for (let i = 0; i < PRACTICE_TRIALS; i++) {
   const t_outcomes = practice_drifts[i] || [0,0,0,0,0,0];
+  const is_forced_practice = i === 1;
   const trial = {
     type: jsPsychTwoStepTrial,
     deterministic_rocket_color: block_task_info[0].deterministic_rocket_color,
@@ -460,6 +523,10 @@ for (let i = 0; i < PRACTICE_TRIALS; i++) {
     feedback_duration: feedback_duration,
     randomize_s1: randomize_s1,
     randomize_s2: randomize_s2,
+    forced_trial: is_forced_practice,
+    forced_state1_key: is_forced_practice ? 0 : null,
+    forced_state2_key: is_forced_practice ? 0 : null,
+    show_gem_counter: false,
     data: {
       practice: true,
       trial: i+1,
@@ -483,6 +550,15 @@ var PRACTICE_TWO_NODE = { timeline: PRACTICE_TWO_TASK };
 // Define finish screen.
 const instructions_04 = {
   type: jsPsychTwoStepInstructions,
+  on_start: function(trial) {
+    let earned = 0;
+    try {
+      earned = typeof window.gem_counter === 'number' ? window.gem_counter : 0;
+    } catch (e) {}
+    trial.pages = [
+      `<p>Great job! You've finished the task.</p><p>You earned <b>${earned}</b> gems in <b>Block ${NUM_BLOCKS}/5</b>.</p><p>Before you finish, we have a couple of short questions for you.</p>`,
+    ];
+  },
   pages: [
     "<p>Great job! You've finished the task.</p><p>Before you finish, we have a couple of short questions for you.</p>",
   ]

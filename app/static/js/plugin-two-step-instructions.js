@@ -131,6 +131,16 @@ var jsPsychTwoStepInstructions = (function (jspsych) {
         transform: translate(-50%, -50%);
         width: 95%;
       }
+      .instructions-map {
+        position: absolute;
+        inset: 0;
+        display: none;
+        align-items: center;
+        justify-content: center;
+      }
+      .instructions-map.active {
+        display: flex;
+      }
       .instructions p {
         font-size: 17px;
         line-height: 1.5em;
@@ -208,6 +218,7 @@ var jsPsychTwoStepInstructions = (function (jspsych) {
 
       // Draw instructions
       new_html += '<div class="instructions-box"><div class="instructions"></div></div>';
+      new_html += '<div class="instructions-map"></div>';
 
       // Draw buttons
       new_html += '<div class="jspsych-instructions-nav">';
@@ -247,8 +258,30 @@ var jsPsychTwoStepInstructions = (function (jspsych) {
         // Define base HTML.
         display_element.innerHTML = new_html;
 
-        // Update instructions text.
-        display_element.querySelector('.instructions').innerHTML = `<p>${trial.pages[current_page]}</p>`;
+        const page_html = trial.pages[current_page];
+        const is_map_page = typeof page_html === 'string' && page_html.indexOf('transition-map-wrapper') !== -1;
+
+        const instructions_box = display_element.querySelector('.instructions-box');
+        const instructions_el = display_element.querySelector('.instructions');
+        const instructions_map = display_element.querySelector('.instructions-map');
+
+        if (is_map_page) {
+          if (instructions_box) { instructions_box.style.display = 'none'; }
+          if (instructions_map) {
+            instructions_map.classList.add('active');
+            instructions_map.innerHTML = page_html;
+          }
+          if (instructions_el) { instructions_el.innerHTML = ''; }
+        } else {
+          if (instructions_box) { instructions_box.style.display = 'block'; }
+          if (instructions_map) {
+            instructions_map.classList.remove('active');
+            instructions_map.innerHTML = '';
+          }
+          if (instructions_el) {
+            instructions_el.innerHTML = `<p>${page_html}</p>`;
+          }
+        }
 
         // Update prev button
         if (current_page != 0) {

@@ -246,8 +246,9 @@ const instructions_2a = {
   pages: [
     "<p>Next, you will learn how to travel to the alien planets.</p>",
     `<p>To visit a planet, you will pick a rocket ship to travel on.</p><p>Below are two example rocket ships to pick from:<br>the <b><font color='${practice_info.rocket_colors[0]}'>${practice_info.rocket_names[0]}</font></b> and <b><font color='${practice_info.rocket_colors[1]}'>${practice_info.rocket_names[1]}</font></b> rocket ships.</p>`,
-    "<p>Some rockets always go to the same planet, while others may have two possible destinations.</p>",
+    "<p>Some rockets always go to the same planet, while others go to two possible destinations at random.</p>",
     "<p>To choose a rocket ship to travel on, you will use the</p><p><b>left/right arrow keys</b> on your keyboard.</p>",
+    "<p>Sometimes the game will tell you which rocket to choose.</p><p>These are <b>forced-choice</b> trials.</p><p>When that happens, follow the instruction and pick the indicated rocket.</p>",
   ],
   add_aliens: [false, false, false, false, false, false],
   add_rockets: [false, false, true, true, true, true],

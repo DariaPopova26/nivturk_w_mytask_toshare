@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Transition Map Preview</title>
+  <link href="/app/static/css/two-step-css.min.css" rel="stylesheet" type="text/css" />
+  <style>
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #1c1c1c;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+    }
+    .card {
+      background: #2b2b2b;
+      padding: 24px 28px;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+    }
+    .transition-map-title {
+      text-align: center;
+      font-size: 20px;
+      margin: 6px 0 12px;
+      color: #ffffff;
+    }
+    .transition-map { 
+      position: relative; 
+      width: 600px; 
+      height: 360px; 
+      --width: 560px; 
+      background: url('/app/static/img/background-stars.png') center / cover no-repeat;
+      border-radius: 12px;
+    }
+    .transition-map-svg { position: absolute; left: 0; top: 0; }
+    .transition-map .transition-rocket {
+      position: absolute;
+      bottom: 0;
+      transform: translate(-50%, 0) scale(0.8);
+      z-index: 2;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div id="map"></div>
+  </div>
+
+  <script>
+    function buildTransitionMapHtml(rocketColors, planetColors, deterministicIndex, blockNum) {
+      const otherIndex = deterministicIndex === 0 ? 1 : 0;
+      const r1x = 170, r2x = 430, ry = 300;
+      const p1x = 150, p2x = 300, p3x = 450, py = 45;
+
+      return `
+        <div class="transition-map-wrapper">
+          <div class="transition-map-title">Rocketship to planet transition map for Block ${blockNum}</div>
+          <div class="transition-map">
+            <svg class="transition-map-svg" width="600" height="360" viewBox="0 0 600 360" aria-label="Rocket to planet transitions">
+              <defs>
+                <marker id="arrow" markerWidth="10" markerHeight="10" refX="6" refY="3" orient="auto" markerUnits="strokeWidth">
+                  <path d="M0,0 L0,6 L6,3 z" fill="#ffffff" />
+                </marker>
+              </defs>
+
+              <circle cx="${p1x}" cy="${py}" r="36" fill="${planetColors[0]}" stroke="#ffffff" stroke-width="3"></circle>
+              <circle cx="${p2x}" cy="${py}" r="36" fill="${planetColors[1]}" stroke="#ffffff" stroke-width="3"></circle>
+              <circle cx="${p3x}" cy="${py}" r="36" fill="${planetColors[2]}" stroke="#ffffff" stroke-width="3"></circle>
+
+              <line x1="${deterministicIndex === 0 ? r1x : r2x}" y1="${ry-70}" x2="${p1x}" y2="${py+45}" stroke="#ffffff" stroke-width="3" marker-end="url(#arrow)" />
+              <line x1="${otherIndex === 0 ? r1x : r2x}" y1="${ry-70}" x2="${p2x}" y2="${py+45}" stroke="#ffffff" stroke-width="3" marker-end="url(#arrow)" />
+              <line x1="${otherIndex === 0 ? r1x : r2x}" y1="${ry-70}" x2="${p3x}" y2="${py+45}" stroke="#ffffff" stroke-width="3" marker-end="url(#arrow)" />
+            </svg>
+
+            <div class="rocket transition-rocket" state="map" style="left: ${r1x}px;">
+              <div class="rocket-body">
+                <div class="rocket-window" style="background: ${rocketColors[0]}"></div>
+                <div class="rocket-studs"></div>
+                <div class="rocket-fin" side="0" style="background: ${rocketColors[0]}"></div>
+                <div class="rocket-fin" side="1" style="background: ${rocketColors[0]}"></div>
+                <div class="rocket-fire"></div>
+              </div>
+            </div>
+            <div class="rocket transition-rocket" state="map" style="left: ${r2x}px;">
+              <div class="rocket-body">
+                <div class="rocket-window" style="background: ${rocketColors[1]}"></div>
+                <div class="rocket-studs"></div>
+                <div class="rocket-fin" side="0" style="background: ${rocketColors[1]}"></div>
+                <div class="rocket-fin" side="1" style="background: ${rocketColors[1]}"></div>
+                <div class="rocket-fire"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    const rocketColors = ['#FFD700', '#00CED1'];
+    const planetColors = ['#398667', '#754198', '#aa5349'];
+    const deterministicIndex = 0;
+    const blockNum = 1;
+
+    document.getElementById('map').innerHTML = buildTransitionMapHtml(rocketColors, planetColors, deterministicIndex, blockNum);
+  </script>
+</body>
+</html>

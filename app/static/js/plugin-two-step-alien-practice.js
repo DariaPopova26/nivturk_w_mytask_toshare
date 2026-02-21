@@ -196,13 +196,13 @@ var jsPsychTwoStepAlienPractice = (function (jspsych) {
           outcome = 0;
         }
         
-        // Show gem image next to the chosen alien (same size as main trial: 40px) only if outcome > 0
+        // Show gem image next to the chosen alien (match main trial size) only if outcome > 0
         var gem_el = display_element.querySelector('#gem-' + side);
         var alien_el = display_element.querySelector('#alien-' + side);
         if (gem_el && alien_el && outcome > 0) {
           // Position gem relative to the alien on the correct side
-          // Use 40px size to match the main trial plugin
-          var GEM_W = 40, GEM_H = 40;
+          // Use 100px size to match the main trial plugin
+          var GEM_W = 100, GEM_H = 100;
           var alienRect = alien_el.getBoundingClientRect();
           var parentRect = display_element.getBoundingClientRect();
           var x = alienRect.left - parentRect.left + (alienRect.width/2) - (GEM_W/2);
