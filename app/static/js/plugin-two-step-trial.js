@@ -750,4 +750,13 @@ var jsPsychTwoStepTrial = (function (jspsych) {
       if (trial.choice_duration !== null) {
         jsPsych.pluginAPI.setTimeout(function() {
           missed_response();
-        }
+        }, trial.choice_duration);
+      }
+
+    }
+  }
+  TwoStepTrialPlugin.info = info;
+
+  return TwoStepTrialPlugin;
+
+})(jsPsychModule);
