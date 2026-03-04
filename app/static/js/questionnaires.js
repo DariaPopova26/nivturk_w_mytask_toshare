@@ -25,7 +25,7 @@ var end_screen = {
     return "<p>Congratulations! You are now done with the experiment.</p>" +
       "<p><b>Total gems earned:</b> " + total_gems + "</p>" +
       "<p>These gems will be converted to your performance bonus</p>" +
-      "<p>To claim your reward, enter this code on Prolific: <b>GALAXY</b></p>" +
+      "<p>To claim your reward, enter this code on Prolific: <b>CEWS26OJ</b></p>" +
       "<p>Press any key to finish. You may close this window after.</p>";
   },
   choices: "ALL_KEYS"
